@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="lib/globalParameters.js"></script>
+<style type='text/css'>
+            body, svg, #graphContainer {
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                margin: 0;
+            }
+            .label {
+                position: absolute;
+                top: 10px;
+                color: white;
+                font-size: 18px;
+                left: 10px;
+                font-family: Verdana;
+            }
+        </style>
+<script src="lib/jquery-3.1.0.js"></script>
+<script src="lib/vivagraph.js"></script>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+
+<script type='text/javascript'>
+
+            function onLoad() {
+            	var minNumber = 1;
+            	var maxNumber = 3000;
+            	var x,y,vertex;
+                var g = Viva.Graph.graph();
+                for (var i=1; i<3000; i++) {
+               x=Math.floor(Math.random()*(maxNumber-minNumber+1)+minNumber);
+                y=Math.floor(Math.random()*(maxNumber-minNumber+1)+minNumber);
+                if(i==1) {
+                	g.addNode(y,y);
+                g.addLink(x,y);
+                }
+                
+                else{                	
+                	vertex = g.getNode(y);
+                	//alert(vertex);
+                	if(vertex==y) 
+                		return;
+                	
+                	
+                		g.addNode(y,y);
+               		  	g.addLink(x,y);
+                /* 
+                	else 
+                	//	alert(vertex.id);
+                		i--;
+                  } */
+                }
+              
+            }
+                var graphics = Viva.Graph.View.svgGraphics();
+                graphics.node(function(node) {
+                	
+            		var radius = 4.5;
+            		var newNode = Viva.Graph.svg('g');          		
+            		var nodeElement = Viva.Graph.svg('circle').attr('fill', '#FFD042').attr('r', radius).attr('stroke', '#FFD042').attr('stroke-width', 1);	
+            		newNode.append(nodeElement);
+            		newNode.attr("cursor", "pointer");
+            		newNode.attr('fill', '#FFD042');
+            		newNode.attr('id', node.id);
+            		return newNode;
+            	})
+             graphics.placeNode(function (nodeUI, pos) {
+            		var imageOffset = 0;
+            		nodeUI.attr('transform', 'translate(' + (pos.x - imageOffset) + ',' + (pos.y - imageOffset) + ')');
+            	});
+           	
+                var layout = Viva.Graph.Layout.forceDirected(g, {
+                    springLength : 50,
+                    springCoeff : .0005,
+                    dragCoeff : .0005,
+                    gravity : -.08
+                });
+                
+                var renderer = Viva.Graph.View.renderer(g,  {
+               		layout : layout,
+               		graphics : graphics
+           		});
+                
+                renderer.run();
+            }
+
+        </script>
+    </head>
+    <body onload="onLoad()">
+
+    </body>
+</html>
